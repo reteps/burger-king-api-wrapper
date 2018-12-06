@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import requests
+import xml.etree.ElementTree
 
 BASE_URL = "http://bkm-cdn.tillster.com"
 BASE_URL_2 = "https://bkm-native-prod.tillster.com"
@@ -59,4 +60,9 @@ def retrieveCoupons():
     return [Promo(d) for d in allData["loyaltyAppSession"]["promoOffers"]]
 
 
-print(retrieveCoupons())
+def getEndpoints():
+    data = requests.get(BASE_URL).text
+    parsed = xml.etree.ElementTree.XML(data)
+    results = parsed.findall('.//{http://s3.amazonaws.com/doc/2006-03-01/}Key')
+    return [r.text for r in results]
+
